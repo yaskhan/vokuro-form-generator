@@ -117,7 +117,7 @@ EOD;
 		$%1$s->setFilters(['string', 'trim',]);
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr);
 	}
 	
 	public function genPassword($fname, $attr) {
@@ -137,7 +137,7 @@ EOD;
 		$%1$s->setFilters(['string', 'trim',]);
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr);
 	}
 	
 	public function genSelect($fname, $attr, $val) {
@@ -149,7 +149,7 @@ EOD;
 		// $%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
 	
 	public function genCheck($fname, $attr) {
@@ -159,7 +159,7 @@ EOD;
 		// $%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr);
 	}
 	
 	public function genDate($fname, $attr, $val) {
@@ -170,7 +170,7 @@ EOD;
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
 	
 	public function genFile($fname, $attr) {
@@ -194,7 +194,7 @@ EOD;
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr);
 	}
 	
 	public function genNumeric($fname, $attr, $val) {
@@ -205,7 +205,7 @@ EOD;
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
         
 	public function genRadio($fname, $attr) {
@@ -215,7 +215,7 @@ EOD;
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr);
 	}
         
 	public function genTextarea($fname, $attr, $val) {
@@ -226,7 +226,7 @@ EOD;
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
 }
 
