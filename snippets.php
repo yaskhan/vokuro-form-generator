@@ -73,41 +73,45 @@ EOD;
         
         public function genValidators($fname, $val) {
             $ret = '';
-            $body = '$'.$fname.'->addValidator(%s);'.PHP_EOL;
+            $body = '		$'.$fname.'->addValidator(%s);'.PHP_EOL;
             $required = "new PresenceOf(['message' => 'required',])";
-            $textlmax = "new StringLength(['max' => %s, 'messageMaximum' => 'Maximum %s characters',])";
-            $textlmin = "new StringLength(['min' => %s, 'messageMinimum' => 'Minimum %s characters',])";
+            $textlmax = 'new StringLength([\'max\' => %1$s, \'messageMaximum\' => \'Maximum %1$s characters\',])';
+            $textlmin = 'new StringLength([\'min\' => %1$s, \'messageMinimum\' => \'Minimum %1$s characters\',])';
             $num = 'new Numericality(["message" => ":field is not numeric",])';
-            if(isset($val)) {
+            if(!empty($val)) {
                 foreach ($val as $v) {
                     if($v['required'])
-                        $ret .= sprintf($body, $reuired);
-                    if($v['maxlen'])
+                        $ret .= sprintf($body, $required);
+                    else if($v['maxlen'])
                         $ret .= sprintf($body, sprintf($textlmax, $v['maxlen']));
-                    if($v['minlen'])
+                    else if($v['minlen'])
                         $ret .= sprintf($body, sprintf($textlmin, $v['minlen']));
-                    if($v['numeric'])
+                    else if($v['numeric'])
                         $ret .= sprintf($body, $num);
                 }
                 return $ret;
+            } else {
+                return '		// $'.$fname.'->addValidators([new PresenceOf([\'message\' => \'required\',])]);'.PHP_EOL;
             }
         }
 
 
         public function genText($fname, $attr, $val) {
 			$field = <<<'EOD'
-		$%1$s = new Text('%1$s', %2$s);
-		%3$s
+		$%1$s = new Text('%1$s', 
+%2$s);
+%3$s
 		// $%1$s->setLabel('%1$s');
 		// $%1$s->setFilters(['string', 'trim',]);
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
+		return PHP_EOL.PHP_EOL.sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
 	
 	public function genEmail($fname, $attr) {
 			$field = <<<'EOD'
-		$%1$s = new Email('%1$s', %2$s);
+		$%1$s = new Email('%1$s',
+%2$s);
 		$%1$s->addValidators([new EmailValidator(['message' => 'The e-mail is not valid',]),]);
 		// $%1$s->setLabel('%1$s');
 		$%1$s->setFilters(['string', 'trim',]);
@@ -118,7 +122,8 @@ EOD;
 	
 	public function genPassword($fname, $attr) {
 			$field = <<<'EOD'
-		$%1$s = new Password('%1$s', %2$s);
+		$%1$s = new Password('%1$s',
+%2$s);
 		$%1$s->addValidators([
                     new PresenceOf([
                         'message' => 'Password is required',
@@ -135,38 +140,43 @@ EOD;
 		return sprintf($field, $fname, $attr);
 	}
 	
-	public function genSelect($fname, $attr) {
+	public function genSelect($fname, $attr, $val) {
 			$field = <<<'EOD'
-		$%1$s = new Select('%1$s', %2$s);
+		$%1$s = new Select('%1$s',
+%2$s);
 		// $%1$s->seOptions([]);
-		// $%1$s->addValidators([new PresenceOf(['message' => 'required',]),]);
+%3$s
 		// $%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
 	
 	public function genCheck($fname, $attr) {
 			$field = <<<'EOD'
-		$%1$s = new Check('%1$s', %2$s);
+		$%1$s = new Check('%1$s',
+%2$s);
 		// $%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
 		return sprintf($field, $fname, $attr);
 	}
 	
-	public function genDate($fname, $attr) {
+	public function genDate($fname, $attr, $val) {
 			$field = <<<'EOD'
-		$%1$s = new Date('%1$s', %2$s);
+		$%1$s = new Date('%1$s',
+%2$s);
+%3$s
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
 	
 	public function genFile($fname, $attr) {
 			$field = <<<'EOD'
-		$%1$s = new File('%1$s', %2$s);
+		$%1$s = new File('%1$s',
+%2$s);
 		// $%1$s->addValidators([new PresenceOf(['message' => 'required',]),
 		//	new FileValidator(
 		//		[
@@ -187,37 +197,36 @@ EOD;
 		return sprintf($field, $fname, $attr);
 	}
 	
-	public function genNumeric($fname, $attr) {
+	public function genNumeric($fname, $attr, $val) {
 			$field = <<<'EOD'
-		$%1$s = new Numeric('%1$s', %2$s);
-		 $%1$s->addValidators([
-				// new PresenceOf(['message' => 'required',]),
-				new Numericality([
-					"message" => ":field is not numeric",
-				])
-		]);
+		$%1$s = new Numeric('%1$s',
+%2$s);
+%3$s
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
         
 	public function genRadio($fname, $attr) {
 			$field = <<<'EOD'
-		$%1$s = new Radio('%1$s', %2$s);
+		$%1$s = new Radio('%1$s',
+%2$s);
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
 		return sprintf($field, $fname, $attr);
 	}
         
-	public function genTextarea($fname, $attr) {
+	public function genTextarea($fname, $attr, $val) {
 			$field = <<<'EOD'
-		$%1$s = new Textarea('%1$s', %2$s);
+		$%1$s = new Textarea('%1$s',
+%2$s);
+%3$s
 		$%1$s->setLabel('%1$s');
 		$this->add($%1$s);
 EOD;
-		return sprintf($field, $fname, $attr);
+		return sprintf($field, $fname, $attr, $this->genValidators($fname, $val));
 	}
 }
 
